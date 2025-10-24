@@ -1,0 +1,20 @@
+import { Categoria } from "./Categoria";
+import { Receta } from "./Receta";
+
+export interface Producto {
+  id: string;
+  nombre: string;
+  categoriaId: string;
+  categoria?: Categoria;
+  descripcion?: string;
+  precioPublico: number;
+  costoUnitario: number;
+  cantidadDisponible: number;
+  unidadMedida: string;
+  sePuedeVender: boolean;
+  sePuedeComprar: boolean;
+  esFabricado: boolean;
+  atributos?: Record<string, string>;
+  receta?: Receta | null;
+  createdAt?: string;
+}
