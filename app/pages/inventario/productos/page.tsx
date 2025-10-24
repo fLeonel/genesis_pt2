@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiClient } from "@/infrastructure/http/apiClient";
 import Link from "next/link";
-import ProductCard from "@/ui/components/Productos/ProductCard";
+import { LoadingState } from "../../../ui/components/base/LoadingAndEmpty";
+import { apiClient } from "../../../infrastructure/http/apiClient";
+import ProductCard from "../../../ui/components/Productos/ProductCard";
 
 interface Producto {
   id: string;
@@ -11,6 +12,12 @@ interface Producto {
   descripcion?: string;
   precioPublico: number;
   categoriaId?: string;
+  cantidadDisponible: number;
+  sePuedeVender: boolean;
+  esFabricado: boolean;
+  categoria?: {
+    nombre: string;
+  };
 }
 
 export default function ProductosPage() {
@@ -27,10 +34,8 @@ export default function ProductosPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
-        <p className="text-gray-500 text-sm animate-pulse">
-          Cargando productos...
-        </p>
+      <div className="min-h-[calc(100vh-80px)] px-6 py-8">
+        <LoadingState message="Cargando productos..." />
       </div>
     );
   }

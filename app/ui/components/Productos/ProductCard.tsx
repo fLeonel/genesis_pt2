@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CubeIcon } from "@heroicons/react/24/outline";
 
 interface ProductCardProps {
   producto: {
@@ -8,6 +9,7 @@ interface ProductCardProps {
     nombre: string;
     descripcion?: string;
     precioPublico: number;
+    cantidadDisponible?: number;
     categoriaId?: string;
   };
 }
@@ -20,9 +22,19 @@ export default function ProductCard({ producto }: ProductCardProps) {
     >
       <div className="p-5 flex flex-col justify-between h-full">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-indigo-600">
-            {producto.nombre}
-          </h2>
+          <div className="flex items-start justify-between mb-2">
+            <h2 className="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">
+              {producto.nombre}
+            </h2>
+            <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full text-xs font-medium">
+              <CubeIcon className="w-4 h-4" />
+              <span>
+                {producto.cantidadDisponible != null
+                  ? `${producto.cantidadDisponible} en stock`
+                  : "Sin stock"}
+              </span>
+            </div>
+          </div>
           <p className="text-sm text-gray-500 mb-3 line-clamp-2">
             {producto.descripcion || "Sin descripción"}
           </p>
