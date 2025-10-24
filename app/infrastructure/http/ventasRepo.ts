@@ -1,8 +1,8 @@
 import { apiClient } from "./apiClient";
 
 export const ventasRepo = {
-  async getAll() {
-    const res = await apiClient.get("/api/ventas");
+  async getAll(options?: RequestInit) {
+    const res = await apiClient.get("/api/ventas", { options });
     return res.data;
   },
 

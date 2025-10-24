@@ -79,6 +79,9 @@ export default function VentaDetailPage() {
         "Venta confirmada correctamente. El inventario ha sido actualizado.",
       );
 
+      router.refresh();
+      router.push("/pages/ventas");
+
       setVenta((prev) =>
         prev
           ? {
