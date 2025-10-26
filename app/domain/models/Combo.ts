@@ -1,10 +1,12 @@
-import { Producto } from "./Productos";
+export interface ComboProducto {
+  productoId: string;
+  cantidad: number;
+}
 
 export interface Combo {
-  id: string;
+  id?: string;
   nombre: string;
   descripcion?: string;
-  productos: Producto[];
   precioTotal: number;
-  createdAt?: string;
+  productos: ComboProducto[];
 }
