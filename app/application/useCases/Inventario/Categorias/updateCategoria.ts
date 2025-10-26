@@ -1,6 +1,6 @@
 import { categoriasRepo } from "@/infrastructure/http/categoriasRepo";
-import { CategoriaFormData } from "@/domain/validators/categoriaSchema";
+import { CategoriaInput } from "@/domain/validators/categoriaSchema";
 
-export async function updateCategoria(id: string, data: CategoriaFormData) {
+export async function updateCategoria(id: string, data: CategoriaInput) {
   return categoriasRepo.update(id, data);
 }

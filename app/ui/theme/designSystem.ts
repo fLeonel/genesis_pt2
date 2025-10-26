@@ -1,4 +1,3 @@
-// Configuración del sistema de diseño
 export const designSystem = {
   colors: {
     primary: {

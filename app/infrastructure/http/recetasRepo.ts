@@ -9,11 +9,11 @@ export const recetasRepo = {
     const res = await apiClient.get(`/api/recetas/${id}`);
     return res.data;
   },
-  async create(data: any) {
+  async create(data: unknown) {
     const res = await apiClient.post("/api/recetas", data);
     return res.data;
   },
-  async update(id: string, data: any) {
+  async update(id: string, data: unknown) {
     const res = await apiClient.put(`/api/recetas/${id}`, data);
     return res.data;
   },

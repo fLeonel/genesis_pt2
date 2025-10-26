@@ -10,6 +10,7 @@ export const ventaDetalleSchema = z.object({
 
 export const ventaSchema = z.object({
   clienteId: z.string().min(1, "Cliente es requerido"),
+  clienteNit: z.string().optional(),
   metodoPago: z.string().min(1, "Método de pago es requerido"),
   notas: z.string().optional(),
   detalles: z

@@ -3,6 +3,7 @@ import { z } from "zod";
 export const clienteSchema = z.object({
   clienteCodigo: z.string().optional(),
   nombre: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  nit: z.string().optional(),
   correo: z.string().email("Correo inválido").optional().or(z.literal("")),
   telefono: z.string().optional(),
   direccion: z.string().optional(),

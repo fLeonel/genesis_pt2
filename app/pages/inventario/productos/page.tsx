@@ -40,6 +40,18 @@ export default function ProductosPage() {
     );
   }
 
+  function getBodegaPath(bodega: Bodega, bodegas: Bodega[]): string {
+    const path = [bodega.nombre];
+    let current = bodega;
+
+    while (current.bodegaPadreId) {
+      const padre = bodegas.find((b) => b.id === current.bodegaPadreId);
+      if (!padre) break;
+      path.unshift(padre.nombre);
+      current = padre;
+    }
+    return path.join(" / ");
+  }
   return (
     <div className="min-h-[calc(100vh-80px)] px-6 py-8">
       {/* Header con botón de acción */}

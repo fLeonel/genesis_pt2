@@ -1,11 +1,10 @@
 "use client";
 
-import { confirmarVenta } from "@/application/useCases/Ventas/confirmarVenta"; // 👈 asegurate de tener este import arriba
+import { confirmarVenta } from "@/application/useCases/Ventas/confirmarVenta";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getVentaById } from "@/application/useCases/Ventas/getVentaById";
 import { deleteVenta } from "@/application/useCases/Ventas/deleteVenta";
-import { updateVenta } from "@/application/useCases/Ventas/udpateVenta";
 import { Venta } from "@/domain/models/Venta";
 import VentaForm from "@/ui/components/Ventas/VentaForm";
 import {
@@ -86,7 +85,7 @@ export default function VentaDetailPage() {
         prev
           ? {
               ...prev,
-              estado: "confirmada",
+              estado: "Confirmada",
               confirmedAt: new Date().toISOString(),
             }
           : null,
@@ -111,7 +110,7 @@ export default function VentaDetailPage() {
   };
 
   const getEstadoBadge = (estado: string) => {
-    if (estado === "confirmada") {
+    if (estado === "Confirmada") {
       return (
         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
           <CheckCircleIcon className="w-4 h-4" />
@@ -154,7 +153,7 @@ export default function VentaDetailPage() {
     );
   }
 
-  const isConfirmed = venta.estado === "confirmada";
+  const isConfirmed = venta.estado === "Confirmada";
 
   return (
     <div className="min-h-[calc(100vh-80px)] px-6 py-8">
@@ -222,18 +221,19 @@ export default function VentaDetailPage() {
           <>
             <VentaForm
               mode="edit"
+              ventaId={venta.id}
               defaultValues={{
                 clienteId: venta.clienteId,
+                clienteNit: venta.clienteNit ?? "",
                 metodoPago: venta.metodoPago,
-                notas: venta.notas || "",
+                notas: venta.notas ?? "",
                 detalles: venta.detalles.map((detalle) => ({
-                  tipo: detalle.tipo || "producto",
-                  itemId: detalle.itemId || detalle.productoId || "",
+                  tipo: "producto",
+                  itemId: detalle.productoId,
                   cantidad: detalle.cantidad,
                   precioUnitario: detalle.precioUnitario,
                 })),
               }}
-              ventaId={venta.id}
             />
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <button
@@ -259,11 +259,22 @@ export default function VentaDetailPage() {
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <UserIcon className="w-5 h-5 text-gray-400" />
                     <span className="text-sm text-gray-900">
-                      {venta.cliente?.nombre || "Cliente eliminado"}
+                      //TODO: Revisar por que no trae el nombre
+                      {venta.clienteNombre}
                     </span>
                   </div>
                 </div>
-
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    NIT
+                  </label>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <UserIcon className="w-5 h-5 text-gray-400" />
+                    <span className="text-sm text-gray-900">
+                      {venta.clienteNit || "CF"}
+                    </span>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Método de pago
@@ -281,8 +292,8 @@ export default function VentaDetailPage() {
                     Fecha de creación
                   </label>
                   <p className="text-sm text-gray-900 bg-gray-50 rounded-lg px-3 py-2">
-                    {venta.createdAt
-                      ? new Date(venta.createdAt).toLocaleDateString("es-GT", {
+                    {venta.fecha
+                      ? new Date(venta.fecha).toLocaleDateString("es-GT", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
@@ -293,13 +304,13 @@ export default function VentaDetailPage() {
                   </p>
                 </div>
 
-                {isConfirmed && venta.confirmedAt && (
+                {isConfirmed && venta.fecha && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Fecha de confirmación
                     </label>
                     <p className="text-sm text-gray-900 bg-green-50 rounded-lg px-3 py-2">
-                      {new Date(venta.confirmedAt).toLocaleDateString("es-GT", {
+                      {new Date(venta.fecha).toLocaleDateString("es-GT", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -351,7 +362,7 @@ export default function VentaDetailPage() {
                       <tr key={index}>
                         <td className="px-4 py-3">
                           <span className="text-sm font-medium text-gray-900">
-                            {detalle.producto?.nombre ||
+                            {detalle.productoId ||
                               `Producto ${detalle.productoId}`}
                           </span>
                         </td>

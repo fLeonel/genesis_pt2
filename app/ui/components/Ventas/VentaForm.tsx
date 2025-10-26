@@ -53,11 +53,13 @@ export default function VentaForm({
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<VentaInput>({
     resolver: zodResolver(ventaSchema),
     defaultValues: {
       clienteId: "",
+      clienteNit: "",
       metodoPago: "",
       notas: "",
       detalles: [
@@ -71,6 +73,24 @@ export default function VentaForm({
       ...defaultValues,
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      reset({
+        clienteId: defaultValues.clienteId || "",
+        clienteNit: defaultValues.clienteNit || "",
+        metodoPago: defaultValues.metodoPago || "",
+        notas: defaultValues.notas || "",
+        detalles:
+          defaultValues.detalles?.map((d) => ({
+            tipo: d.tipo || "producto",
+            itemId: d.itemId || "",
+            cantidad: d.cantidad || 1,
+            precioUnitario: d.precioUnitario || 0,
+          })) || [],
+      });
+    }
+  }, [defaultValues, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -92,6 +112,20 @@ export default function VentaForm({
       })
       .finally(() => setLoadingData(false));
   }, []);
+
+  const selectedClienteId = watch("clienteId");
+
+  useEffect(() => {
+    if (!selectedClienteId) return;
+
+    const clienteSeleccionado = clientes.find(
+      (c) => c.id === selectedClienteId,
+    );
+
+    if (clienteSeleccionado) {
+      setValue("clienteNit", clienteSeleccionado.nit || "CF");
+    }
+  }, [selectedClienteId, clientes, setValue]);
 
   const total = useMemo(() => {
     return watchedDetalles.reduce((sum, detalle) => {
@@ -146,6 +180,7 @@ export default function VentaForm({
 
       const ventaData = {
         clienteId: data.clienteId,
+        clienteNit: data.clienteNit,
         metodoPago: data.metodoPago,
         notas: data.notas,
         detalles: data.detalles.map((d) => ({
@@ -153,8 +188,6 @@ export default function VentaForm({
           cantidad: Number(d.cantidad) || 1,
         })),
       };
-
-      console.log("Payload enviado:", JSON.stringify(ventaData, null, 2));
 
       if (mode === "create") {
         await createVenta(ventaData);
@@ -196,13 +229,16 @@ export default function VentaForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form
+      onSubmit={handleSubmit((data) => onSubmit(data))}
+      className="space-y-8"
+    >
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">
           Información general
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <div className="flex items-center gap-2">
@@ -224,6 +260,23 @@ export default function VentaForm({
             {errors.clienteId && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.clienteId.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              NIT
+            </label>
+            <input
+              type="text"
+              {...register("clienteNit")}
+              placeholder="Ej. 1234567-8"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+            />
+            {errors.clienteNit && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.clienteNit.message}
               </p>
             )}
           </div>

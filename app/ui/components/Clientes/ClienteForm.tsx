@@ -7,16 +7,26 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { createCliente } from "@/application/useCases/Clientes/createCliente";
 import { updateCliente } from "@/application/useCases/Clientes/updateCliente";
-import { UserIcon, EnvelopeIcon, PhoneIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import { clienteSchema, type ClienteInput } from "@/domain/validators/clienteSchema";
+import {
+  UserIcon,
+  EnvelopeIcon,
+  PhoneIcon,
+  MapPinIcon,
+} from "@heroicons/react/24/outline";
+import {
+  clienteSchema,
+  type ClienteInput,
+} from "@/domain/validators/clienteSchema";
 
 // Función para generar código de cliente automático
 function generateClienteCodigo(): string {
   const now = new Date();
   const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const random = Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, "0");
   return `CLI-${year}${month}${day}-${random}`;
 }
 
@@ -81,7 +91,10 @@ export default function ClienteForm({
       router.push("/pages/clientes");
     } catch (err) {
       console.error("❌ Error al guardar cliente:", err);
-      toast.error("Error al guardar cliente: " + (err instanceof Error ? err.message : "Intenta nuevamente"));
+      toast.error(
+        "Error al guardar cliente: " +
+          (err instanceof Error ? err.message : "Intenta nuevamente"),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -100,7 +113,9 @@ export default function ClienteForm({
           placeholder="Se generará automáticamente"
           className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm bg-gray-50 text-gray-600 cursor-not-allowed"
         />
-        <p className="text-xs text-gray-500 mt-1">Código generado automáticamente</p>
+        <p className="text-xs text-gray-500 mt-1">
+          Código generado automáticamente
+        </p>
       </div>
 
       {/* Nombre - Campo requerido */}
@@ -120,7 +135,23 @@ export default function ClienteForm({
           <p className="text-red-500 text-xs mt-1">{errors.nombre.message}</p>
         )}
       </div>
-
+      {/* NIT */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="flex items-center gap-2">
+            <UserIcon className="w-4 h-4 text-indigo-600" />
+            Nit
+          </div>
+        </label>
+        <input
+          {...register("nit")}
+          placeholder="CF"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+        />
+        {errors.nombre && (
+          <p className="text-red-500 text-xs mt-1">{errors.nombre.message}</p>
+        )}
+      </div>
       {/* Correo electrónico */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -174,7 +205,9 @@ export default function ClienteForm({
           className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none"
         />
         {errors.direccion && (
-          <p className="text-red-500 text-xs mt-1">{errors.direccion.message}</p>
+          <p className="text-red-500 text-xs mt-1">
+            {errors.direccion.message}
+          </p>
         )}
       </div>
 

@@ -1,8 +1,10 @@
 import { apiClient } from "./apiClient";
+import type { AxiosRequestConfig } from "axios";
+import { Venta } from "@/domain/models/Venta";
 
 export const ventasRepo = {
-  async getAll(options?: RequestInit) {
-    const res = await apiClient.get("/api/ventas", { options });
+  async getAll(options?: AxiosRequestConfig) {
+    const res = await apiClient.get<Venta[]>("/api/ventas", options);
     return res.data;
   },
 
@@ -11,12 +13,12 @@ export const ventasRepo = {
     return res.data;
   },
 
-  async create(data: any) {
+  async create(data: unknown) {
     const res = await apiClient.post("/api/ventas", data);
     return res.data;
   },
 
-  async update(id: string, data: any) {
+  async update(id: string, data: unknown) {
     const res = await apiClient.put(`/api/ventas/${id}`, data);
     return res.data;
   },

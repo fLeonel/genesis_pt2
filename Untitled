@@ -1,0 +1,1 @@
+_import { getBodegas } from "@/application/useCases/Inventario/Bodegas/getBodegas";_import { bodegasRepo } from "@/infrastructure/http/bodegaRepo";_export async function createBodeg(data: Omit<Bodega, "id">: Promise<Bodega> {_export async function getBodegaById(id: string) {

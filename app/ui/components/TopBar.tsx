@@ -9,6 +9,7 @@ export default function TopBar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // eslint-disable-next-line @next/next/no-assign-module-variable
   const module = useMemo(() => {
     if (pathname.startsWith("/pages/inventario")) return "inventario";
     if (pathname.startsWith("/pages/ventas")) return "ventas";
@@ -35,6 +36,7 @@ export default function TopBar() {
           { label: "Categorías", href: "/pages/inventario/categorias" },
           { label: "Combos", href: "/pages/inventario/combos" },
           { label: "Recetas", href: "/pages/inventario/recetas" },
+          { label: "Bodegas ", href: "/pages/inventario/bodegas" },
         ],
       },
     ],

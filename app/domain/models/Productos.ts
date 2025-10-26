@@ -1,4 +1,4 @@
-import { Categoria } from "./Categoria";
+import { Categoria } from "./Categorias";
 import { Receta } from "./Receta";
 
 export interface Producto {
@@ -9,6 +9,7 @@ export interface Producto {
   descripcion?: string;
   precioPublico: number;
   costoUnitario: number;
+  bodegaId: string;
   cantidadDisponible: number;
   unidadMedida: string;
   sePuedeVender: boolean;

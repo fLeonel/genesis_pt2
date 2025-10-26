@@ -1,31 +1,26 @@
-import { Cliente } from "./Cliente";
-import { Producto } from "./Productos";
-import { Combo } from "./Combo";
-
 export interface VentaDetalle {
-  id: string;
-  tipo: "producto" | "combo";
-  itemId: string;
-  // Para mantener compatibilidad con datos existentes
-  productoId?: string;
-  producto?: Producto;
-  combo?: Combo;
+  productoId: string;
+  productoNombre: string;
   cantidad: number;
   precioUnitario: number;
-  createdAt?: string;
+  subtotal: number;
 }
 
-export type EstadoVenta = "borrador" | "confirmada";
+export type EstadoVenta =
+  | "Pendiente"
+  | "Confirmada"
+  | "Cancelada"
+  | "Entregada";
 
 export interface Venta {
   id: string;
-  clienteId: string;
-  cliente?: Cliente;
-  metodoPago: string;
-  notas?: string;
+  fecha: string;
   total: number;
+  metodoPago: string;
   estado: EstadoVenta;
+  notas?: string;
+  clienteId: string;
+  clienteNombre: string;
+  clienteNit: string;
   detalles: VentaDetalle[];
-  createdAt?: string;
-  confirmedAt?: string;
 }

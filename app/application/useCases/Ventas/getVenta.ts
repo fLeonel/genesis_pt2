@@ -1,5 +1,6 @@
+import { Venta } from "@/domain/models/Venta";
 import { ventasRepo } from "@/infrastructure/http/ventasRepo";
 
-export async function getVentas() {
-  return await ventasRepo.getAll({ cache: "no-store" });
+export async function getVentas(): Promise<Venta[]> {
+  return await ventasRepo.getAll();
 }

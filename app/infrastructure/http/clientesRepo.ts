@@ -9,11 +9,11 @@ export const clientesRepo = {
     const res = await apiClient.get(`/api/clientes/${id}`);
     return res.data;
   },
-  async create(data: any) {
+  async create(data: unknown) {
     const res = await apiClient.post("/api/clientes", data);
     return res.data;
   },
-  async update(id: string, data: any) {
+  async update(id: string, data: unknown) {
     const res = await apiClient.put(`/api/clientes/${id}`, data);
     return res.data;
   },

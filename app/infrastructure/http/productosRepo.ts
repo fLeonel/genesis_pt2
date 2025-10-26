@@ -1,8 +1,7 @@
-import { IProductosRepo } from "@/application/ports/IProductosRepo";
-import { Producto } from "@/domain/models/Productos";
 import { apiClient } from "./apiClient";
+import { Producto } from "@/domain/models/Productos";
 
-export const productosRepo: IProductosRepo = {
+export const productosRepo = {
   async getAll() {
     const res = await apiClient.get<Producto[]>("/api/productos");
     return res.data;

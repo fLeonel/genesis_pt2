@@ -2,16 +2,15 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { styleClasses } from "../../ui/theme/designSystem";
-import Card from "../../ui/components/base/Card";
-import Button from "../../ui/components/base/Button";
-import PageHeader from "../../ui/components/base/PageHeader";
-import { LoadingState, EmptyState } from "../../ui/components/base/LoadingAndEmpty";
-import Input from "../../ui/components/base/FormElements";
-import Badge from "../../ui/components/base/Badge";
-import { getClientes } from "../../application/useCases/Clientes/getClientes";
-import { Cliente } from "../../domain/models/Cliente";
-import ClienteCard from "../../ui/components/Clientes/ClienteCard";
+import { styleClasses } from "@/ui/theme/designSystem";
+import Card from "@/ui/components/base/Card";
+import Button from "@/ui/components/base/Button";
+import PageHeader from "@/ui/components/base/PageHeader";
+import { LoadingState, EmptyState } from "@/ui/components/base/LoadingAndEmpty";
+import Input from "@/ui/components/base/FormElements";
+import { getClientes } from "@/application/useCases/Clientes/getClientes";
+import { Cliente } from "@/domain/models/Cliente";
+import ClienteCard from "@/ui/components/Clientes/ClienteCard";
 import {
   UserPlusIcon,
   UsersIcon,
@@ -22,7 +21,7 @@ import {
   MapPinIcon,
   MagnifyingGlassIcon,
   Squares2X2Icon,
-  ListBulletIcon
+  ListBulletIcon,
 } from "@heroicons/react/24/outline";
 
 type SortField = "nombre" | "correo" | "telefono" | "createdAt";
@@ -44,7 +43,6 @@ export default function ClientesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Función para manejar el ordenamiento
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -56,20 +54,21 @@ export default function ClientesPage() {
 
   // Función para manejar la eliminación de cliente desde el card
   const handleClienteDeleted = (clienteId: string) => {
-    setClientes(prev => prev.filter(cliente => cliente.id !== clienteId));
+    setClientes((prev) => prev.filter((cliente) => cliente.id !== clienteId));
   };
 
-  // Clientes filtrados y ordenados
   const filteredAndSortedClientes = useMemo(() => {
     let filtered = clientes;
 
-    // Filtrar por búsqueda
     if (searchTerm) {
-      filtered = clientes.filter(cliente =>
-        cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cliente.correo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cliente.telefono?.includes(searchTerm) ||
-        cliente.clienteCodigo?.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = clientes.filter(
+        (cliente) =>
+          cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          cliente.correo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          cliente.telefono?.includes(searchTerm) ||
+          cliente.clienteCodigo
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -103,7 +102,7 @@ export default function ClientesPage() {
         <Button
           variant="primary"
           size="md"
-          onClick={() => window.location.href = "/pages/clientes/crear"}
+          onClick={() => (window.location.href = "/pages/clientes/crear")}
           className="flex items-center gap-2"
         >
           <UserPlusIcon className="w-4 h-4" />
@@ -131,20 +130,22 @@ export default function ClientesPage() {
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setViewMode("table")}
-                className={`p-2 rounded-md transition-colors ${viewMode === "table"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === "table"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 title="Vista de tabla"
               >
                 <ListBulletIcon className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-md transition-colors ${viewMode === "grid"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 title="Vista de tarjetas"
               >
                 <Squares2X2Icon className="w-4 h-4" />
@@ -157,7 +158,11 @@ export default function ClientesPage() {
         {filteredAndSortedClientes.length === 0 ? (
           <EmptyState
             icon={<UsersIcon className="w-16 h-16" />}
-            title={searchTerm ? "No se encontraron clientes" : "Aún no hay clientes registrados"}
+            title={
+              searchTerm
+                ? "No se encontraron clientes"
+                : "Aún no hay clientes registrados"
+            }
             description={
               searchTerm
                 ? "Intenta con otros términos de búsqueda"
@@ -168,7 +173,9 @@ export default function ClientesPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  onClick={() => window.location.href = "/pages/clientes/crear"}
+                  onClick={() =>
+                    (window.location.href = "/pages/clientes/crear")
+                  }
                   className="flex items-center gap-2"
                 >
                   <UserPlusIcon className="w-4 h-4" />
@@ -197,11 +204,12 @@ export default function ClientesPage() {
                             className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider hover:text-indigo-600 transition-colors"
                           >
                             Nombre
-                            {sortField === "nombre" && (
-                              sortDirection === "asc" ?
-                                <ChevronUpIcon className="w-4 h-4" /> :
+                            {sortField === "nombre" &&
+                              (sortDirection === "asc" ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                              ) : (
                                 <ChevronDownIcon className="w-4 h-4" />
-                            )}
+                              ))}
                           </button>
                         </th>
                         <th className="px-6 py-3 text-left">
@@ -210,11 +218,12 @@ export default function ClientesPage() {
                             className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider hover:text-indigo-600 transition-colors"
                           >
                             Correo
-                            {sortField === "correo" && (
-                              sortDirection === "asc" ?
-                                <ChevronUpIcon className="w-4 h-4" /> :
+                            {sortField === "correo" &&
+                              (sortDirection === "asc" ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                              ) : (
                                 <ChevronDownIcon className="w-4 h-4" />
-                            )}
+                              ))}
                           </button>
                         </th>
                         <th className="px-6 py-3 text-left">
@@ -223,11 +232,12 @@ export default function ClientesPage() {
                             className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider hover:text-indigo-600 transition-colors"
                           >
                             Teléfono
-                            {sortField === "telefono" && (
-                              sortDirection === "asc" ?
-                                <ChevronUpIcon className="w-4 h-4" /> :
+                            {sortField === "telefono" &&
+                              (sortDirection === "asc" ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                              ) : (
                                 <ChevronDownIcon className="w-4 h-4" />
-                            )}
+                              ))}
                           </button>
                         </th>
                         <th className="px-6 py-3 text-left">
@@ -241,11 +251,12 @@ export default function ClientesPage() {
                             className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider hover:text-indigo-600 transition-colors"
                           >
                             Fecha
-                            {sortField === "createdAt" && (
-                              sortDirection === "asc" ?
-                                <ChevronUpIcon className="w-4 h-4" /> :
+                            {sortField === "createdAt" &&
+                              (sortDirection === "asc" ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                              ) : (
                                 <ChevronDownIcon className="w-4 h-4" />
-                            )}
+                              ))}
                           </button>
                         </th>
                         <th className="px-6 py-3 text-left">
@@ -259,7 +270,7 @@ export default function ClientesPage() {
                       {filteredAndSortedClientes.map((cliente) => (
                         <tr key={cliente.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 text-sm text-gray-900 font-mono">
-                            {cliente.clienteCodigo || '-'}
+                            {cliente.clienteCodigo || "-"}
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center">
@@ -278,32 +289,34 @@ export default function ClientesPage() {
                           <td className="px-6 py-4">
                             <div className="flex items-center text-sm text-gray-600">
                               <EnvelopeIcon className="w-4 h-4 mr-2 text-gray-400" />
-                              {cliente.correo || '-'}
+                              {cliente.correo || "-"}
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center text-sm text-gray-600">
                               <PhoneIcon className="w-4 h-4 mr-2 text-gray-400" />
-                              {cliente.telefono || '-'}
+                              {cliente.telefono || "-"}
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center text-sm text-gray-600">
                               <MapPinIcon className="w-4 h-4 mr-2 text-gray-400" />
                               <span className="max-w-xs truncate">
-                                {cliente.direccion || '-'}
+                                {cliente.direccion || "-"}
                               </span>
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             {cliente.createdAt
-                              ? new Date(cliente.createdAt).toLocaleDateString('es-GT', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric'
-                              })
-                              : '-'
-                            }
+                              ? new Date(cliente.createdAt).toLocaleDateString(
+                                  "es-GT",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )
+                              : "-"}
                           </td>
                           <td className="px-6 py-4">
                             <Link

@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getCategorias } from "@/application/useCases/Inventario/Categorias/getCategorias";
 import { apiClient } from "@/infrastructure/http/apiClient";
-import { Producto } from "@/domain/models/Producto";
+import { Producto } from "@/domain/models/Productos";
 import toast from "react-hot-toast";
+import { getBodegas } from "@/application/useCases/Inventario/Bodegas/getBodega";
+import { Bodega } from "@/domain/models/Bodega";
 
 export default function ProductoDetailPage() {
   const { id } = useParams();
@@ -15,6 +17,7 @@ export default function ProductoDetailPage() {
   const [categorias, setCategorias] = useState<
     { id: string; nombre: string }[]
   >([]);
+  const [bodegas, setBodegas] = useState<{ id: string; nombre: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<
     "general" | "contabilidad" | "extras"
@@ -24,6 +27,7 @@ export default function ProductoDetailPage() {
     nombre: "",
     descripcion: "",
     categoriaId: "",
+    bodegaId: "",
     precioPublico: 0,
     costoUnitario: 0,
     cantidadDisponible: 0,
@@ -38,24 +42,30 @@ export default function ProductoDetailPage() {
 
     const fetchData = async () => {
       try {
-        const [productoRes, categoriasRes] = await Promise.all([
+        const [productoRes, categoriasRes, bodegasRes] = await Promise.all([
           apiClient.get<Producto>(`/api/productos/${id}`),
           getCategorias(),
+          getBodegas(),
         ]);
 
-        setProducto(productoRes.data);
+        const p = productoRes.data;
+
+        setProducto(p);
         setCategorias(categoriasRes);
+        setBodegas(bodegasRes);
+
         setFormData({
-          nombre: productoRes.data.nombre,
-          descripcion: productoRes.data.descripcion || "",
-          categoriaId: productoRes.data.categoriaId || "",
-          precioPublico: productoRes.data.precioPublico,
-          costoUnitario: productoRes.data.costoUnitario,
-          cantidadDisponible: productoRes.data.cantidadDisponible,
-          unidadMedida: productoRes.data.unidadMedida,
-          sePuedeVender: productoRes.data.sePuedeVender,
-          sePuedeComprar: productoRes.data.sePuedeComprar,
-          esFabricado: productoRes.data.esFabricado,
+          nombre: p.nombre,
+          descripcion: p.descripcion || "",
+          categoriaId: p.categoriaId || "",
+          bodegaId: p.bodegaId || "",
+          precioPublico: p.precioPublico,
+          costoUnitario: p.costoUnitario,
+          cantidadDisponible: p.cantidadDisponible,
+          unidadMedida: p.unidadMedida,
+          sePuedeVender: p.sePuedeVender,
+          sePuedeComprar: p.sePuedeComprar,
+          esFabricado: p.esFabricado,
         });
       } catch (err) {
         toast.error("Error cargando producto");
@@ -136,6 +146,19 @@ export default function ProductoDetailPage() {
     );
   }
 
+  function getBodegaPath(bodega: Bodega, bodegas: Bodega[]): string {
+    const path = [bodega.nombre];
+    let current = bodega;
+
+    while (current.bodegaPadreId) {
+      const padre = bodegas.find((b) => b.id === current.bodegaPadreId);
+      if (!padre) break;
+      path.unshift(padre.nombre);
+      current = padre;
+    }
+    return path.join(" / ");
+  }
+
   return (
     <form className="flex flex-col w-full min-h-[calc(100vh-80px)] bg-gray-50 px-12 py-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
@@ -174,6 +197,7 @@ export default function ProductoDetailPage() {
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="flex border-b border-gray-200 mb-6 text-sm overflow-x-auto">
         {[
           { key: "general", label: "Información General" },
@@ -197,6 +221,7 @@ export default function ProductoDetailPage() {
 
       {activeTab === "general" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Categoría */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Categoría *
@@ -217,6 +242,28 @@ export default function ProductoDetailPage() {
             </select>
           </div>
 
+          {/* Bodega */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Bodega
+            </label>
+            <select
+              value={formData.bodegaId}
+              onChange={(e) =>
+                setFormData({ ...formData, bodegaId: e.target.value })
+              }
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Selecciona una bodega</option>
+              {bodegas.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {getBodegaPath(b, bodegas)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Unidad */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Unidad de medida *
@@ -231,6 +278,7 @@ export default function ProductoDetailPage() {
             />
           </div>
 
+          {/* Cantidad */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Cantidad disponible *
@@ -248,6 +296,7 @@ export default function ProductoDetailPage() {
             />
           </div>
 
+          {/* Descripción */}
           <div className="md:col-span-2 lg:col-span-3">
             <label className="block text-sm font-medium text-gray-700">
               Descripción
@@ -265,6 +314,7 @@ export default function ProductoDetailPage() {
         </div>
       )}
 
+      {/* Contabilidad */}
       {activeTab === "contabilidad" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
@@ -311,6 +361,7 @@ export default function ProductoDetailPage() {
         </div>
       )}
 
+      {/* Footer */}
       <div className="flex justify-end gap-3 pt-8 mt-12 border-t border-gray-200">
         <button
           type="button"

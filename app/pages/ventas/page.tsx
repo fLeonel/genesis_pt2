@@ -17,14 +17,14 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-type SortField = "createdAt" | "total" | "estado" | "cliente";
+type SortField = "fecha" | "total" | "estado" | "clienteNombre";
 type SortDirection = "asc" | "desc";
 
 export default function VentasPage() {
   const router = useRouter();
   const [ventas, setVentas] = useState<Venta[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortField, setSortField] = useState<SortField>("createdAt");
+  const [sortField, setSortField] = useState<SortField>("fecha");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -57,7 +57,7 @@ export default function VentasPage() {
     if (searchTerm) {
       filtered = ventas.filter(
         (venta) =>
-          venta.cliente?.nombre
+          venta.clienteNombre
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
           venta.metodoPago.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -68,9 +68,9 @@ export default function VentasPage() {
     return [...filtered].sort((a, b) => {
       let aValue: string | number = a[sortField] as string | number;
       let bValue: string | number = b[sortField] as string | number;
-      if (sortField === "cliente") {
-        aValue = a.cliente?.nombre || "";
-        bValue = b.cliente?.nombre || "";
+      if (sortField === "clienteNombre") {
+        aValue = a.clienteNombre || "";
+        bValue = b.clienteNombre || "";
       }
       const aStr = String(aValue).toLowerCase();
       const bStr = String(bValue).toLowerCase();
@@ -88,7 +88,7 @@ export default function VentasPage() {
   };
 
   const getEstadoBadge = (estado: string) => {
-    if (estado === "confirmada") {
+    if (estado === "Confirmada") {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
           <CheckCircleIcon className="w-3 h-3" />
@@ -99,7 +99,7 @@ export default function VentasPage() {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
           <ClockIcon className="w-3 h-3" />
-          Borrador
+          Pendiente
         </span>
       );
     }
@@ -190,11 +190,11 @@ export default function VentasPage() {
                   </th>
                   <th className="px-6 py-3 text-left">
                     <button
-                      onClick={() => handleSort("cliente")}
+                      onClick={() => handleSort("clienteNombre")}
                       className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider hover:text-green-600 transition"
                     >
                       Cliente
-                      {sortField === "cliente" &&
+                      {sortField === "clienteNombre" &&
                         (sortDirection === "asc" ? (
                           <ChevronUpIcon className="w-4 h-4" />
                         ) : (
@@ -237,11 +237,11 @@ export default function VentasPage() {
                   </th>
                   <th className="px-6 py-3 text-left">
                     <button
-                      onClick={() => handleSort("createdAt")}
+                      onClick={() => handleSort("fecha")}
                       className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider hover:text-green-600 transition"
                     >
                       Fecha
-                      {sortField === "createdAt" &&
+                      {sortField === "fecha" &&
                         (sortDirection === "asc" ? (
                           <ChevronUpIcon className="w-4 h-4" />
                         ) : (
@@ -271,7 +271,7 @@ export default function VentasPage() {
                         </div>
                         <div>
                           <div className="font-medium text-gray-900">
-                            {venta.cliente?.nombre || "Cliente eliminado"}
+                            {venta.clienteNombre || "Cliente eliminado"}
                           </div>
                           <div className="text-sm text-gray-500">
                             {venta.detalles.length}{" "}
@@ -297,17 +297,14 @@ export default function VentasPage() {
                       {getEstadoBadge(venta.estado)}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {venta.createdAt
-                        ? new Date(venta.createdAt).toLocaleDateString(
-                            "es-GT",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            },
-                          )
+                      {venta.fecha
+                        ? new Date(venta.fecha).toLocaleDateString("es-GT", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
                         : "-"}
                     </td>
                     <td className="px-6 py-4">

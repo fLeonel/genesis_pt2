@@ -1,8 +1,6 @@
 import { z } from "zod";
 
-export const categoriaSchema = z.object({
+export const bodegaSchema = z.object({
   nombre: z.string().min(2, "El nombre es obligatorio"),
   descripcion: z.string().optional(),
 });
-
-export type CategoriaInput = z.infer<typeof categoriaSchema>;

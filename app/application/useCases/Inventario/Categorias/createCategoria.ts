@@ -1,6 +1,10 @@
+import {
+  categoriaSchema,
+  CategoriaInput,
+} from "@/domain/validators/categoriaSchema";
 import { categoriasRepo } from "@/infrastructure/http/categoriasRepo";
-import { CategoriaFormData } from "@/domain/validators/categoriaSchema";
 
-export async function createCategoria(data: CategoriaFormData) {
-  return categoriasRepo.create(data);
+export async function createCategoria(data: CategoriaInput) {
+  const parsed = categoriaSchema.parse(data);
+  return categoriasRepo.create(parsed);
 }

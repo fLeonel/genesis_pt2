@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCategorias } from "@/application/useCases/Inventario/Categorias/getCategorias";
 import { createProducto } from "@/application/useCases/Inventario/Productos/createProducto";
+import { getBodegas } from "@/application/useCases/Inventario/Bodegas/getBodega";
+import { Bodega } from "@/domain/models/Bodega";
 
 const productoSchema = z.object({
   nombre: z.string().min(2, "El nombre es obligatorio"),
@@ -14,6 +16,7 @@ const productoSchema = z.object({
   categoriaId: z.string().uuid("Selecciona una categoría válida").nullable(),
   precioPublico: z.coerce.number().min(0, "Debe ser positivo"),
   costoUnitario: z.coerce.number().min(0, "Debe ser positivo"),
+  bodegaId: z.string().optional(),
   cantidadDisponible: z.coerce.number().min(0, "Debe ser positivo"),
   unidadMedida: z.string().min(1, "Campo requerido"),
   sePuedeVender: z.boolean(),
@@ -34,6 +37,7 @@ export default function ProductForm({
   const [categorias, setCategorias] = useState<
     { id: string; nombre: string }[]
   >([]);
+  const [bodegas, setBodegas] = useState<{ id: string; nombre: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "general" | "contabilidad" | "extras"
@@ -51,6 +55,7 @@ export default function ProductForm({
       unidadMedida: "",
       precioPublico: 0,
       costoUnitario: 0,
+      bodegaId: "",
       cantidadDisponible: 0,
       sePuedeVender: true,
       sePuedeComprar: false,
@@ -59,32 +64,40 @@ export default function ProductForm({
     },
   });
 
-  // 🔹 Cargar categorías al montar
   useEffect(() => {
     getCategorias()
-      .then((res) => {
-        console.log("📦 Categorías cargadas:", res);
-        setCategorias(res);
-      })
-      .catch((e) => console.error("❌ Error cargando categorías:", e));
+      .then(setCategorias)
+      .catch((e) => console.error("Error cargando categorías:", e));
+
+    getBodegas()
+      .then(setBodegas)
+      .catch((e) => console.error("Error cargando bodegas:", e));
   }, []);
 
-  // 🔹 Enviar producto
   const onSubmit = async (data: ProductoInput) => {
     try {
-      console.log("🧾 Datos a enviar al backend:", data);
       setSubmitting(true);
       await createProducto(data);
-      console.log("✅ Producto creado correctamente");
       router.push("/pages/inventario/productos");
-    } catch (err: any) {
-      console.error("❌ Error al guardar producto:", err);
-      alert("Error al guardar producto: " + err.message);
+    } catch (err) {
+      console.error("Error al crear producto:", err);
     } finally {
       setSubmitting(false);
     }
   };
 
+  function getBodegaPath(bodega: Bodega, bodegas: Bodega[]): string {
+    const path = [bodega.nombre];
+    let current = bodega;
+
+    while (current.bodegaPadreId) {
+      const padre = bodegas.find((b) => b.id === current.bodegaPadreId);
+      if (!padre) break;
+      path.unshift(padre.nombre);
+      current = padre;
+    }
+    return path.join(" / ");
+  }
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -149,13 +162,14 @@ export default function ProductForm({
       {/* GENERAL */}
       {activeTab === "general" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Categoría */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Categoría *
             </label>
             <select
               {...register("categoriaId", {
-                setValueAs: (v) => (v === "" ? null : v), // 🔹 conversión a null
+                setValueAs: (v) => (v === "" ? null : v),
               })}
               className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
             >
@@ -173,6 +187,27 @@ export default function ProductForm({
             )}
           </div>
 
+          {/* Bodega */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Bodega
+            </label>
+            <select
+              {...register("bodegaId", {
+                setValueAs: (v) => (v === "" ? null : v),
+              })}
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Selecciona una bodega</option>
+              {bodegas.map((bod) => (
+                <option key={bod.id} value={bod.id}>
+                  {getBodegaPath(bod as Bodega, bodegas as Bodega[])}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Unidad */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Unidad de medida *
@@ -184,6 +219,7 @@ export default function ProductForm({
             />
           </div>
 
+          {/* Cantidad */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Cantidad disponible *
@@ -196,6 +232,7 @@ export default function ProductForm({
             />
           </div>
 
+          {/* Descripción */}
           <div className="md:col-span-2 lg:col-span-3">
             <label className="block text-sm font-medium text-gray-700">
               Descripción

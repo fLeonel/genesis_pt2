@@ -1,4 +1,4 @@
-import { Categoria } from "@/domain/models/Categoria";
+import { Categoria } from "@/domain/models/Categorias";
 
 export interface ICategoriasRepo {
   getAll(): Promise<Categoria[]>;
