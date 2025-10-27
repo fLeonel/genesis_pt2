@@ -1,21 +1,21 @@
-# 🚀 Dashboard de Ventas - Cazuela Chapina
+# Dashboard de Ventas - Cazuela Chapina
 
 ## ✨ Nuevas Características
 
-### 🎯 **Dashboard Mejorado**
+### **Dashboard Mejorado**
 - **UI/UX Completamente Rediseñado**: Interfaz moderna con gradientes y micro-interacciones
 - **KPIs con Iconos**: Métricas visuales con iconos de Heroicons y colores temáticos
 - **Datos Resilientes**: Sistema de fallback con datos mock si la API no está disponible
 - **Loading States**: Skeletons de carga profesionales
 - **Responsive Design**: Adaptable a todas las pantallas
 
-### 🤖 **GENESIS AI Integration**
+### **GENESIS AI Integration**
 - **Motor de IA**: Análisis inteligente de patrones de venta
 - **Recomendaciones**: Insights automáticos para optimizar el negocio
 - **Parser Inteligente**: Convierte respuestas de markdown a componentes visuales
 - **Branding Consistente**: Diseño profesional para la marca GENESIS
 
-## 🎨 **Mejoras de Diseño**
+## **Mejoras de Diseño**
 
 ### **KPIs Cards**
 - **Ventas Diarias**: Gradiente verde con icono de moneda
@@ -52,7 +52,7 @@ app/
 - **Tailwind CSS**: Estilos y gradientes
 - **Next.js**: Framework base
 
-## 🚀 **Cómo Usar**
+## **Cómo Usar**
 
 1. **Iniciar Desarrollo**:
    ```bash
@@ -70,7 +70,7 @@ app/
    http://localhost:5009/api/ai/insights
    ```
 
-## 📊 **Datos Mock**
+##  **Datos Mock**
 
 Si la API no está disponible, el sistema usa automáticamente datos de demostración:
 - Ventas diarias: Q2,350
@@ -81,7 +81,7 @@ Si la API no está disponible, el sistema usa automáticamente datos de demostra
 - 5 productos más vendidos
 - Proporción picante/no picante
 
-## 🎯 **Próximas Mejoras**
+## **Próximas Mejoras**
 
 - [ ] Dashboard en tiempo real con WebSockets
 - [ ] Más insights de GENESIS AI
