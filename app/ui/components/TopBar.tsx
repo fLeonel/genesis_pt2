@@ -41,7 +41,7 @@ export default function TopBar() {
       },
     ],
     ventas: [
-      { label: "Dashboard", href: "/pages/ventas" },
+      { label: "Dashboard", href: "/pages/ventas/dashboard" },
       { label: "Historial", href: "/pages/ventas/historial" },
     ],
   };
